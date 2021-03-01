@@ -1,3 +1,8 @@
+scratch/
+.neuron_dir/
+neuron_v2.log
+.envrc
+.init.lua
 # Created by https://www.toptal.com/developers/gitignore/api/lua
 # Edit at https://www.toptal.com/developers/gitignore?templates=lua
 
