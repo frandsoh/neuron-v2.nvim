@@ -150,7 +150,7 @@ function neuron_v2.line_set_extmarks(buf_nr, line_nr, line)
 end
 
 local function buffer_update_on_lines(bufnr, first_line, last_line_updated)
-  -- local log = require("neuron_v2.log").debug
+  local log = require("neuron_v2.log").debug
   local ns_id = neuron_v2.namespace
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, first_line, last_line_updated, false)
@@ -198,15 +198,9 @@ local function buffer_update_on_lines(bufnr, first_line, last_line_updated)
         )
       end
       local extmarks_in_line = utils.line_all_extmarks(bufnr, ns_id, i)
-      lines = vim.api.nvim_buf_get_lines(bufnr, first_line, last_line_updated, false)
-      links = {}
-      for link in helpers.link_scanner(lines[i - first_line + 1], _) do
-        table.insert(links, link)
-      end
       local count_extmarks = #extmarks_in_line or 0
       local count_links = #links or 0
       while count_extmarks > count_links do
-        -- log({#extmarks_in_line, #links})
         if count_links == 0 then
           for _, e in pairs(extmarks_in_line) do
             vim.api.nvim_buf_del_extmark(bufnr, ns_id, e[1])
@@ -233,7 +227,6 @@ local function buffer_update_on_lines(bufnr, first_line, last_line_updated)
     end
   end
   local all_extmarks = utils.buf_all_extmarks(bufnr, ns_id)
-  -- log({all_extmarks})
   for _, e in pairs(all_extmarks) do
     -- Delete extmarks if they are at position 0,0
     if e[3] == e[4]["end_col"] then
@@ -256,6 +249,12 @@ function neuron_v2.buffer_attach()
     bufnr,
     false,
     {
+      -- on_lines = vim.schedule_wrap(
+      --   function(...)
+      --     local event = {...}
+      --     buffer_update_on_lines(event[2], event[4], event[6])
+      --   end
+      -- )
       on_lines = vim.schedule_wrap(
         function(...)
           local event = {...}
