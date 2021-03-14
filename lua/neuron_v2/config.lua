@@ -23,39 +23,47 @@
 --  ino <expr> <c-x><c-y> neuron#insert_zettel_complete(1)
 -- end
 
+---@class Path
 local Path = require("plenary.path")
--- local _, Path = pcall(require, "plenary.path")
--- if not Path then
---   return print("neuron_v2 requires nvim-lua/plenary.nvim to work!")
--- end
 
--- local _, scandir = pcall(require, "plenary.scandir")
--- if not scandir then
---   return print("neuron_v2 requires nvim-lua/plenary.nvim to work!")
--- end
+local log = require("neuron_v2.log")
 
 local Config = {}
+
 Config.__index = Config
 
 function Config:validate()
   vim.validate {
-    neuron_dir = {self.neuron_dir:expand(), "string"},
+    -- neuron_dir = {self.neuron_dir, "string"},
     use_default_mappings = {self.use_default_mappings, "boolean"},
-    mappings = {self.mappings, "table"}, -- the leader key to for all mappings
+    mappings = {self.mappings, "table"},
     virtual_titles = {self.virtual_titles, "boolean"},
     gen_cache_on_write = {self.gen_cache_on_write, "boolean"},
     virtual_text_highlight = {self.virtual_text_highlight, "string"},
     debug = {self.debug, "boolean"}
   }
-
-  if not self.neuron_dir:exists() then
-    error(string.format("The path '%s' supplied for the neuron_dir does not exist", self.neuron_dir:expand()))
+  local exists = self.neuron_dir:exists()
+  -- log.debug(exists)
+  if not exists then
+    error(
+      string.format(
+        "The directory %s does not exist. Please suply a valid dir for the neuron_v2 setup",
+        self.neuron_dir.filename
+      )
+    )
+    log.debug(
+      string.format(
+        "The directory %s does not exist. Please suply a valid dir for the neuron_v2 setup",
+        self.neuron_dir.filename
+      )
+    )
   end
-
-  if not self.neuron_dir:joinpath("neuron.dhall"):exists() then
+  local dhall = self.neuron_dir:joinpath("neuron.dhall")
+  -- log.debug(dhall)
+  if not dhall:exists() then
     error(
       ("The neuron_dir: %s does not include a neuron.dhall file - create one and try again"):format(
-        self.neuron_dir:expand()
+        self.neuron_dir.filename
       )
     )
   end
@@ -81,29 +89,45 @@ function Config:extend(user_config)
   for k, v in pairs(user_config) do
     self[k] = v
   end
-  self.neuron_dir = Path:new(self.neuron_dir)
+  log.debug(type(self.neuron_dir), self.neuron_dir)
+  -- if type(self.neuron_dir) == "string" then
+  --   self.neuron_dir = self:new_path(self.neuron_dir)
+  -- -- elseif type(self.neuron_dir) == "table" then
+  -- --   self.neuron_dir = self.neuron_dir
+  -- end
+  -- self.neuron_dir
+  return true
+end
+
+function Config:after_extend(dir)
+  ---@type Path
+  dir = vim.fn.expand(dir)
+  self.neuron_dir = Path:new(dir)
+
+  -- log.debug(type(self.neuron_dir), self.neuron_dir)
   self:validate()
 end
 
--- function Config:after_extend()
---   self.neuron_dir = Path:new(self.neuron_dir)
---   -- P(self.neuron_dir)
--- end
-
 function Config:setup(user_config)
   self:extend(user_config)
-  -- self:after_extend()
+  self:after_extend(self.neuron_dir)
 end
 
-return setmetatable(
-  {
-    neuron_dir = Path:new("~/neuron"):expand(),
-    use_default_mappings = true, -- to set default mappings
-    mappings = mappings,
-    virtual_titles = true, -- set virtual titles
-    gen_cache_on_write = true, -- regenerate cache on write
-    virtual_text_highlight = "Comment", -- the highlight color for the virtual titles
-    debug = false -- to debug the plugin, set this to true
-  },
-  Config
-)
+-- function Config:new_path(string)
+--   return Path:new(string)
+-- end
+
+local obj = {
+  ---@type Path
+  neuron_dir = vim.fn.expand("~/neuron"),
+  use_default_mappings = true, -- to set default mappings
+  mappings = mappings,
+  virtual_titles = true, -- set virtual titles
+  gen_cache_on_write = true, -- regenerate cache on write
+  virtual_text_highlight = "Comment", -- the highlight color for the virtual titles
+  debug = false -- to debug the plugin, set this to true
+}
+
+setmetatable(obj, Config)
+
+return obj

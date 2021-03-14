@@ -41,7 +41,7 @@ function M.set_keymaps()
   -- M.map_buf("b", "<cmd>lua require'neuron/telescope'.find_backlinks()<CR>")
   -- M.map_buf("B", "<cmd>lua require'neuron/telescope'.find_backlinks {insert = true}<CR>")
 
-  -- M.map_buf("t", "<cmd>lua require'neuron/telescope'.find_tags()<CR>")
+  M.map_buf("t", "<cmd>lua R('neuron_v2.popup').show_links()<CR>")
 
   -- TODO: rename function to start_server
   M.map_buf(m.start_server, "<cmd>lua require('neuron_v2').serve_and_watch({open = true})<CR>")

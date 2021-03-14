@@ -11,9 +11,9 @@ local default_config = {
   -- Name of the plugin. Prepended to log messages
   plugin = "neuron_v2",
   -- Should print the output to neovim while running
-  use_console = true,
+  use_console = false,
   -- Should highlighting be used in console (using echohl)
-  highlights = true,
+  highlights = false,
   -- Should write to a file
   use_file = true,
   -- Any messages above this level will be logged.
@@ -36,17 +36,16 @@ local log = {}
 
 local unpack = unpack or table.unpack
 
-local function make_logpath()
-  local info = debug.getinfo(1, "S")
-
-  local source = string.sub(info.source, 2)
-  local log_path = vim.api.nvim_call_function("fnamemodify", {source, ":h:h:h:p"})
-  -- P(log_path)
-  return log_path
-end
-
 log.new = function(config, standalone)
   config = vim.tbl_deep_extend("force", default_config, config)
+  local function make_logpath()
+    local info = debug.getinfo(1, "S")
+
+    local source = string.sub(info.source, 2)
+    local log_path = vim.api.nvim_call_function("fnamemodify", {source, ":h:h:h:p"})
+    -- P(log_path)
+    return log_path
+  end
 
   local outfile = string.format("%s/%s.log", make_logpath(), config.plugin)
   -- local outfile = string.format('%s/%s.log', vim.api.nvim_call_function('stdpath', {'data'}), config.plugin)
@@ -148,14 +147,15 @@ log.new = function(config, standalone)
   end
 end
 
-local function level(debug_plugin)
-  debug_plugin = require("neuron_v2.config").debug
-  if debug_plugin == true then
+local function level()
+  local develop = os.getenv("NEURON_DEVELOP")
+  if develop == "true" then
     return "debug"
   else
     return "info"
   end
 end
+level()
 -- local neuron_v2_config = {level = level()}
 log.new({level = level()}, true)
 -- log.new(default_config, true)
