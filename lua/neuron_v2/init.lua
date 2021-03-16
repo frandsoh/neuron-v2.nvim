@@ -8,8 +8,7 @@ local neuron_v2 = {}
 
 neuron_v2.namespace = vim.api.nvim_create_namespace("neuron_v2")
 
--- TODO(frandsoh): Ignore if already in the buffer or open the win
--- if it's edited
+-- Ignore if already in the buffer or open the win if it's edited
 function neuron_v2.goto_index()
   vim.cmd("e " .. config.neuron_dir:joinpath("index.md").filename)
   vim.api.nvim_set_current_dir(config.neuron_dir.filename)
@@ -131,7 +130,7 @@ function neuron_v2.buffer_set_extmarks(buf_nr)
 end
 
 function neuron_v2.line_set_extmarks(buf_nr, line_nr, line)
-  for link in helpers.link_scanner(line, _) do
+  for link in helpers.link_scanner(line) do
     local start_col, end_col, str = link.col, link.end_col, link.str
     local ns_id = neuron_v2.namespace
 

@@ -9,7 +9,6 @@ local function msub(line, s, f)
   return line:sub(s, f) .. vim.fn.strcharpart(line:sub(f + 1), 0, 1)
 end
 
----comment
 function helpers.zettel_exists(zettelid)
   -- log.debug(config.neuron_dir:joinpath(zettelid .. ".md"))
   -- log.debug(config.neuron_dir:joinpath(zettelid .. ".md"):exists())
