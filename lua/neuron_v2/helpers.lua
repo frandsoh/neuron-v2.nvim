@@ -10,8 +10,8 @@ local function msub(line, s, f)
 end
 
 function helpers.zettel_exists(zettelid)
-  -- log.debug(config.neuron_dir:joinpath(zettelid .. ".md"))
-  -- log.debug(config.neuron_dir:joinpath(zettelid .. ".md"):exists())
+  local zettel_path = config.neuron_dir:joinpath(zettelid .. ".md")
+  return zettel_path:exists()
 end
 
 function helpers.zettel_path(zettelid)
@@ -130,7 +130,7 @@ function helpers.get_link_under_cursor()
   local line = vim.api.nvim_get_current_line()
   local x = vim.api.nvim_win_get_cursor(0)[2] + 1
 
-  for v in helpers.link_scanner(line, _) do
+  for v in helpers.link_scanner(line) do
     if x >= v.col and x <= v.end_col then
       return v
     end
