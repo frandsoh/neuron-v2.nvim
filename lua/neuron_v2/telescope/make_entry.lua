@@ -4,7 +4,6 @@ local make_entry = {}
 
 function make_entry.gen_from_neuron_query(opts)
   opts = opts or {}
-  -- opts.tail_path = true
   local title_width = opts.title_width or 20
   local tag_width = opts.tag_width or 40
   local displayer =
