@@ -89,7 +89,7 @@ function Config:extend(user_config)
   for k, v in pairs(user_config) do
     self[k] = v
   end
-  log.debug(type(self.neuron_dir), self.neuron_dir)
+  -- log.debug(type(self.neuron_dir), self.neuron_dir)
   -- if type(self.neuron_dir) == "string" then
   --   self.neuron_dir = self:new_path(self.neuron_dir)
   -- -- elseif type(self.neuron_dir) == "table" then

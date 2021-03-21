@@ -43,6 +43,7 @@ function M.set_keymaps()
 
   M.map_buf("t", "<cmd>lua R('neuron_v2.popup').show_links()<CR>")
 
+  M.map_buf("k", "<cmd>lua require('neuron_v2.preview').show_preview()<CR>")
   -- TODO: rename function to start_server
   M.map_buf(m.start_server, "<cmd>lua require('neuron_v2').serve_and_watch({open = true})<CR>")
   M.map_buf(m.open_page, "<cmd>lua require('neuron_v2').open_page()<CR>")
