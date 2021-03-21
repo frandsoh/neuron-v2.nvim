@@ -1,19 +1,12 @@
-local helpers = require("neuron_v2.helpers")
 local Job = require("plenary.job")
 local pickers = require("telescope.pickers")
 local make_entry = require("neuron_v2.telescope.make_entry")
 local finders = require("telescope.finders")
 local sorters = require("telescope.sorters")
 local previewers = require("telescope.previewers")
-local conf = require("telescope.config").values
 local neuron_dir = require("neuron_v2.config").neuron_dir
-local actions = require("telescope.actions")
-local entry_display = require("telescope.pickers.entry_display")
-local path = require("telescope.path")
-local utils = require("telescope.utils")
 local log = require("neuron_v2.log")
 
-local get_default = utils.get_default
 local M = {}
 
 function M.find_zettels(opts)
@@ -94,4 +87,36 @@ function M.find_zettels(opts)
   end
 end
 
+function M.find_tags(opts)
+  opts = opts or {}
+  local result
+  local go_on = false
+  local query_job =
+    Job:new {
+    command = "neuron",
+    args = {"-d", neuron_dir.filename, "query", "--cached", "--tags"},
+    on_exit = vim.schedule_wrap(
+      function(self)
+        result = self:result()
+        -- P(result)
+        go_on = true
+        return go_on
+      end
+    )
+  }
+  query_job:start()
+  if
+    vim.wait(
+      2000,
+      function()
+        return go_on
+      end
+    )
+   then
+    -- P(result)
+    local json = vim.fn.json_decode(result)
+    P(json)
+  end
+end
+M.find_tags()
 return M
