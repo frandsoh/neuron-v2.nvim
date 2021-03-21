@@ -6,6 +6,8 @@ local sorters = require("telescope.sorters")
 local previewers = require("telescope.previewers")
 local neuron_dir = require("neuron_v2.config").neuron_dir
 local log = require("neuron_v2.log")
+local actions = require("telescope.actions")
+local n_actions = require("neuron_v2.telescope.actions")
 
 local M = {}
 
@@ -54,7 +56,7 @@ function M.find_zettels(opts)
     if opts.tag_width >= 30 then
       opts.tag_width = 30
     end
-    log.debug(opts.tag_width)
+    -- log.debug(opts.tag_width)
     -- log.debug(opts.title_width)
     local picker_opts = {
       prompt_title = "Find Zettels",
@@ -71,11 +73,12 @@ function M.find_zettels(opts)
       sorting_strategy = "descending"
     }
 
-    -- if opts.insert then
-    --   picker_opts.attach_mappings = function()
-    --     actions.select_default:replace(neuron_actions.insert_maker("id"))
-    --     return true
-    --   end
+    if opts.insert then
+      picker_opts.attach_mappings = function()
+        actions.select_default:replace(n_actions.insert_entry("ID"))
+        return true
+      end
+    end
     -- else
     --   picker_opts.attach_mappings = function()
     --     actions.select_default:replace(neuron_actions.edit_or_insert)
@@ -118,5 +121,5 @@ function M.find_tags(opts)
     P(json)
   end
 end
-M.find_tags()
+
 return M
