@@ -52,7 +52,7 @@ function neuron_v2.serve_and_watch(opts)
     Job:new {
     command = "neuron",
     cwd = config.neuron_dir:expand(),
-    args = {"gen", "-w", "-s", opts.address},
+    args = {"gen", "-w", "-s", opts.address, "--pretty-urls"},
     interactive = false,
     on_start = vim.schedule_wrap(
       function()
