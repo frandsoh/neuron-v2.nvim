@@ -1,5 +1,7 @@
 local entry_display = require "telescope.pickers.entry_display"
 local neuron_dir = require("neuron_v2.config").neuron_dir
+local log = require("neuron_v2.log")
+
 local make_entry = {}
 
 function make_entry.gen_from_neuron_query(opts)
@@ -56,6 +58,35 @@ function make_entry.gen_from_neuron_query(opts)
       display = make_display,
       filename = filename,
       zettel_tags = zettel_tags
+    }
+    -- log.debug(entry_tbl)
+    return entry_tbl
+  end
+end
+function make_entry.gen_from_all_tags(opts)
+  opts = opts or {}
+  local displayer =
+    entry_display.create {
+    separator = " ▏",
+    items = {
+      {width = 50}
+      -- {remaining = true}
+    }
+  }
+
+  local make_display = function(entry)
+    local tag = {entry.value, "TelescopeResultsIdentifier"}
+    return displayer {tag}
+  end
+  return function(entry)
+    log.debug(entry)
+    local entry_tbl = {
+      valid = true,
+      value = entry,
+      ordinal = entry,
+      display = make_display
+      -- filename = filename,
+      -- zettel_tags = zettel_tags
     }
     -- log.debug(entry_tbl)
     return entry_tbl

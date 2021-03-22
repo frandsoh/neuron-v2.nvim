@@ -1,6 +1,6 @@
 local Job = require("plenary.job")
 local pickers = require("telescope.pickers")
-local make_entry = require("neuron_v2.telescope.make_entry")
+local make_entry = R("neuron_v2.telescope.make_entry")
 local finders = require("telescope.finders")
 local sorters = require("telescope.sorters")
 local previewers = require("telescope.previewers")
@@ -122,8 +122,8 @@ function M.find_tags(opts)
       prompt_title = "Tags",
       results_title = "All Tags",
       finder = finders.new_table {
-        results = json
-        -- entry_maker = make_entry.gen_from_neuron_query(opts)
+        results = json,
+        entry_maker = make_entry.gen_from_all_tags(opts)
       },
       -- previewer = previewers.vim_buffer_cat.new(opts),
       -- sorter = sorters.get_substr_matcher(),
@@ -149,5 +149,5 @@ function M.find_tags(opts)
     pickers.new(opts, picker_opts):find()
   end
 end
-
+M.find_tags()
 return M
