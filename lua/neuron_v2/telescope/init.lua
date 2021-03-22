@@ -116,9 +116,37 @@ function M.find_tags(opts)
       end
     )
    then
-    -- P(result)
     local json = vim.fn.json_decode(result)
-    P(json)
+    -- TODO(frandsoh): adjust window size
+    local picker_opts = {
+      prompt_title = "Tags",
+      results_title = "All Tags",
+      finder = finders.new_table {
+        results = json
+        -- entry_maker = make_entry.gen_from_neuron_query(opts)
+      },
+      -- previewer = previewers.vim_buffer_cat.new(opts),
+      -- sorter = sorters.get_substr_matcher(),
+      -- sorter = conf.generic_sorter(opts),
+      sorter = sorters.get_fzy_sorter(opts),
+      layout_strategy = "vertical",
+      sorting_strategy = "descending"
+    }
+
+    -- if opts.insert then
+    --   picker_opts.attach_mappings = function()
+    --     actions.select_default:replace(n_actions.insert_entry("ID"))
+    --     return true
+    --   end
+    -- end
+    -- else
+    --   picker_opts.attach_mappings = function()
+    --     actions.select_default:replace(neuron_actions.edit_or_insert)
+    --     return true
+    --   end
+    -- end
+
+    pickers.new(opts, picker_opts):find()
   end
 end
 
