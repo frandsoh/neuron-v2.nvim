@@ -130,5 +130,36 @@ function M.find_tags(opts)
     pickers.new(opts, picker_opts):find()
   end
 end
-M.find_tags()
+
+function M.show_graph(opts)
+  opts = opts or {}
+  local result
+  local go_on = false
+  local query_job =
+    Job:new {
+    command = "neuron",
+    args = {"-d", neuron_dir.filename, "query", "--cached", "--graph"},
+    on_exit = vim.schedule_wrap(
+      function(self)
+        result = self:result()
+        -- P(result)
+        go_on = true
+        return go_on
+      end
+    )
+  }
+  query_job:start()
+  if
+    vim.wait(
+      2000,
+      function()
+        return go_on
+      end
+    )
+   then
+    local json = vim.fn.json_decode(result)
+    log.debug(json)
+  end
+end
+M.show_graph()
 return M
