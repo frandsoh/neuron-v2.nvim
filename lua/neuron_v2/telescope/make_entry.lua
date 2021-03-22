@@ -79,7 +79,7 @@ function make_entry.gen_from_all_tags(opts)
     return displayer {tag}
   end
   return function(entry)
-    log.debug(entry)
+    -- log.debug(entry)
     local entry_tbl = {
       valid = true,
       value = entry,

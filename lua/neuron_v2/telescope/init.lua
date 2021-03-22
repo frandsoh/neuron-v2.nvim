@@ -7,7 +7,7 @@ local previewers = require("telescope.previewers")
 local neuron_dir = require("neuron_v2.config").neuron_dir
 local log = require("neuron_v2.log")
 local actions = require("telescope.actions")
-local n_actions = require("neuron_v2.telescope.actions")
+local n_actions = R("neuron_v2.telescope.actions")
 
 local M = {}
 
@@ -66,8 +66,6 @@ function M.find_zettels(opts)
         entry_maker = make_entry.gen_from_neuron_query(opts)
       },
       previewer = previewers.vim_buffer_cat.new(opts),
-      -- sorter = sorters.get_substr_matcher(),
-      -- sorter = conf.generic_sorter(opts),
       sorter = sorters.get_fzy_sorter(opts),
       layout_strategy = "vertical",
       sorting_strategy = "descending"
@@ -79,12 +77,6 @@ function M.find_zettels(opts)
         return true
       end
     end
-    -- else
-    --   picker_opts.attach_mappings = function()
-    --     actions.select_default:replace(neuron_actions.edit_or_insert)
-    --     return true
-    --   end
-    -- end
 
     pickers.new(opts, picker_opts):find()
   end
@@ -125,26 +117,15 @@ function M.find_tags(opts)
         results = json,
         entry_maker = make_entry.gen_from_all_tags(opts)
       },
-      -- previewer = previewers.vim_buffer_cat.new(opts),
-      -- sorter = sorters.get_substr_matcher(),
-      -- sorter = conf.generic_sorter(opts),
       sorter = sorters.get_fzy_sorter(opts),
       layout_strategy = "vertical",
       sorting_strategy = "descending"
     }
 
-    -- if opts.insert then
-    --   picker_opts.attach_mappings = function()
-    --     actions.select_default:replace(n_actions.insert_entry("ID"))
-    --     return true
-    --   end
-    -- end
-    -- else
-    --   picker_opts.attach_mappings = function()
-    --     actions.select_default:replace(neuron_actions.edit_or_insert)
-    --     return true
-    --   end
-    -- end
+    picker_opts.attach_mappings = function()
+      actions.select_default:replace(n_actions.create_tag_picker(opts))
+      return true
+    end
 
     pickers.new(opts, picker_opts):find()
   end
