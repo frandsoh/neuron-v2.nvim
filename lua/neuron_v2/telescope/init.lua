@@ -1,13 +1,13 @@
 local Job = require("plenary.job")
 local pickers = require("telescope.pickers")
-local make_entry = R("neuron_v2.telescope.make_entry")
+local make_entry = require("neuron_v2.telescope.make_entry")
 local finders = require("telescope.finders")
 local sorters = require("telescope.sorters")
 local previewers = require("telescope.previewers")
 local neuron_dir = require("neuron_v2.config").neuron_dir
 local log = require("neuron_v2.log")
 local actions = require("telescope.actions")
-local n_actions = R("neuron_v2.telescope.actions")
+local n_actions = require("neuron_v2.telescope.actions")
 
 local M = {}
 
