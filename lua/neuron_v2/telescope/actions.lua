@@ -27,6 +27,8 @@ function M.insert_entry(key)
     -- log.debug(bufnr, lnum, col)
     if key == "ID" then
       vim.api.nvim_buf_set_text(bufnr, lnum - 1, col - 1, lnum - 1, col - 1, {"[[" .. entry.value[key] .. "]]"})
+    else
+      vim.api.nvim_buf_set_text(bufnr, lnum - 1, col - 1, lnum - 1, col - 1, {entry.value[key]})
     end
   end
 end
