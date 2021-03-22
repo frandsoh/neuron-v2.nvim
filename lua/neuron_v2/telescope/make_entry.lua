@@ -14,6 +14,7 @@ function make_entry.gen_from_neuron_query(opts)
     items = {
       {width = title_width},
       {width = tag_width},
+      {width = 10},
       {remaining = true}
     }
   }

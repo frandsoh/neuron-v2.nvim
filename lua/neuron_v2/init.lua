@@ -52,7 +52,7 @@ function neuron_v2.serve_and_watch(opts)
     Job:new {
     command = "neuron",
     cwd = config.neuron_dir:expand(),
-    args = {"gen", "-w", "-s", opts.address},
+    args = {"gen", "-w", "-s", opts.address, "--pretty-urls"},
     interactive = false,
     on_start = vim.schedule_wrap(
       function()
@@ -92,7 +92,7 @@ function neuron_v2.open_page()
         local result = vim.fn.json_decode(self:result())
         require("neuron_v2.log").debug(vim.inspect(result["Slug"]))
         slug = result["Slug"]
-        utils.os_open(NeuronServe.address .. "/" .. slug .. ".html")
+        utils.os_open(NeuronServe.address .. "/" .. slug)
       end
     )
   )

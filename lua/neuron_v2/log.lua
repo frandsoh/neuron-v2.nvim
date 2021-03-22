@@ -32,6 +32,7 @@ local default_config = {
 }
 
 -- {{{ NO NEED TO CHANGE
+
 local log = {}
 
 local unpack = unpack or table.unpack
