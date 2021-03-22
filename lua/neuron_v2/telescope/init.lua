@@ -1,12 +1,14 @@
 local Job = require("plenary.job")
-local pickers = require("telescope.pickers")
-local make_entry = require("neuron_v2.telescope.make_entry")
+local actions = require("telescope.actions")
 local finders = require("telescope.finders")
-local sorters = require("telescope.sorters")
+local pickers = require("telescope.pickers")
 local previewers = require("telescope.previewers")
+local sorters = require("telescope.sorters")
+
+-- neuron_v2
 local neuron_dir = require("neuron_v2.config").neuron_dir
 local log = require("neuron_v2.log")
-local actions = require("telescope.actions")
+local make_entry = require("neuron_v2.telescope.make_entry")
 local n_actions = require("neuron_v2.telescope.actions")
 
 local M = {}
@@ -158,8 +160,25 @@ function M.show_graph(opts)
     )
    then
     local json = vim.fn.json_decode(result)
-    log.debug(json)
+    local adjacencyMap = json.result.adjacencyMap
+    local vertices = json.result.vertices
+    -- log.debug(adjacencyMap)
+    log.debug(vertices)
+    for k, v in pairs(adjacencyMap) do
+      if vim.tbl_isempty(v) then
+        vertices[k] = nil
+      else
+        vertices[k]["adjacent"] = v
+      end
+    end
+    log.debug(vertices)
+    local results = {}
+    for _, v in pairs(vertices) do
+      table.insert(results, v)
+    end
+
+    log.debug(results)
   end
 end
-M.show_graph()
+
 return M
