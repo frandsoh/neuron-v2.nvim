@@ -43,6 +43,7 @@ function helpers.link_scanner(line, pos, opts)
       local zettel_path = require("neuron_v2.helpers").zettel_path(zettelid)
       local zettel_exists = zettel_path:exists()
 
+      -- TODO(frandsoh): Should I move this somewhere else?
       -- if the link has a # at the start and end, ignore them
       if link[3]:len() == 3 and link[7]:len() == 3 then
         start = start + 1
@@ -101,11 +102,14 @@ function helpers.get_visual()
 end
 
 function helpers.get_link_under_cursor()
-  local line = vim.api.nvim_get_current_line()
-  local x = vim.api.nvim_win_get_cursor(0)[2] + 1
+  local line = vim.api.nvim_get_current_line() -- Gets the current line.
+  local pos = vim.api.nvim_win_get_cursor(0) -- {1,0} indexed {row, col}
 
-  for v in helpers.link_scanner(line) do
-    if x >= v.col and x <= v.end_col then
+  -- row - 1 to make it work with nvim_buf_get_lines... i think :)
+  local row, col, bufnr = pos[1] - 1, pos[2] + 1, vim.api.nvim_get_current_buf()
+
+  for v in helpers.link_scanner(line, nil, {row = row, bufnr = bufnr}) do
+    if col >= v.col and col <= v.end_col then
       return v
     end
   end
