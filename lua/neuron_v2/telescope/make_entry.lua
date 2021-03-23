@@ -25,7 +25,7 @@ function make_entry.gen_from_neuron_query(opts)
 
     local zettel_title = {entry.value.Title, "TelescopeResultsIdentifier"}
     local zettel_id = {entry.value.ID, "TelescopeResultsLineNr"}
-    local zettel_date = {sub_date, "TelescopeResultsLineNr"}
+    local zettel_date = {sub_date, "TelescopeResultsLineNr"} or ""
     local zettel_tags = function()
       if #entry.zettel_tags > 0 then
         return "#" .. entry.zettel_tags
@@ -51,12 +51,15 @@ function make_entry.gen_from_neuron_query(opts)
     if entry.Meta.tags then
       zettel_tags = table.concat(entry.Meta.tags, " #")
     end
-    local date = entry.Date:sub(1, 10) or ""
+    if not entry.Date then
+      entry.Date = "1970-01-01T23:00"
+    end
+
     -- log.debug(entry)
     local entry_tbl = {
       valid = true,
       value = entry,
-      ordinal = entry.Title .. " date:" .. date .. " #" .. (zettel_tags or ""),
+      ordinal = entry.Title .. " date:" .. entry.Date:sub(1, 10) .. " #" .. (zettel_tags or ""),
       display = make_display,
       filename = filename,
       zettel_tags = zettel_tags
