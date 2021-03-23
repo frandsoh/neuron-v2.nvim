@@ -135,7 +135,9 @@ function helpers.open()
         function()
           local created_note = file_path:exists()
           if created_note then
-            vim.cmd("e " .. file_path:expand())
+            require("neuron_v2").buffer_update_on_lines(link.bufnr, link.row, link.row + 1)
+            vim.cmd("write")
+            vim.cmd("edit " .. file_path:expand())
             local last_line = vim.api.nvim_buf_line_count(0)
 
             -- To insert lines at a given index, set `start` and `end` to the
@@ -160,6 +162,7 @@ function helpers.open()
     }:start()
     return
   end
+  vim.cmd [[write]]
   vim.cmd("e " .. file_path:expand())
   vim.api.nvim_set_current_dir(config.neuron_dir:expand())
 end
