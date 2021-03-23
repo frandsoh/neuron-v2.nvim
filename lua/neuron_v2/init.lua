@@ -19,7 +19,7 @@ local function setup_autocmds()
   vim.cmd [[augroup NeuronV2]]
   vim.cmd [[au!]]
   vim.cmd(string.format("au BufRead %s lua require('neuron_v2').buffer_attach()", pathpattern))
-  -- vim.cmd(string.format("au BufRead %s lua require('neuron_v2').buffer_set_extmarks()", pathpattern))
+
   if config.gen_cache_on_write == true then
     vim.cmd(string.format("au BufWritePost %s lua require('neuron_v2').gen()", pathpattern))
   end
@@ -248,30 +248,12 @@ function neuron_v2.buffer_attach()
     bufnr,
     false,
     {
-      -- on_lines = vim.schedule_wrap(
-      --   function(...)
-      --     local event = {...}
-      --     buffer_update_on_lines(event[2], event[4], event[6])
-      --   end
-      -- )
       on_lines = vim.schedule_wrap(
         function(...)
           local event = {...}
           neuron_v2.buffer_update_on_lines(event[2], event[4], event[6])
         end
       )
-      -- on_detach = function(...)
-      --   local event = {...}
-      --   vim.api.nvim_buf_clear_namespace(event[2], ns_id, 0, -1)
-      --   require("neuron_v2.log").debug("namespace cleared")
-      --   -- buffer_update_on_lines(event[2], 0, line_count)
-      -- end,
-      -- on_reload = function(...)
-      --   local event = {...}
-      --   vim.api.nvim_buf_clear_namespace(event[2], ns_id, {0}, {-1})
-      --   require("neuron_v2.log").debug("namespace cleared")
-      --   buffer_update_on_lines(event[2], 0, line_count)
-      -- end
     }
   )
 end
