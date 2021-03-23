@@ -11,9 +11,9 @@ local default_config = {
   -- Name of the plugin. Prepended to log messages
   plugin = "neuron_v2",
   -- Should print the output to neovim while running
-  use_console = false,
+  use_console = true,
   -- Should highlighting be used in console (using echohl)
-  highlights = false,
+  highlights = true,
   -- Should write to a file
   use_file = true,
   -- Any messages above this level will be logged.
@@ -43,8 +43,8 @@ log.new = function(config, standalone)
     local info = debug.getinfo(1, "S")
 
     local source = string.sub(info.source, 2)
-    local log_path = vim.api.nvim_call_function("fnamemodify", {source, ":h:h:h:p"})
-    -- P(log_path)
+    local log_path = vim.api.nvim_call_function("fnamemodify", {source, ":p:h:h:h"})
+    -- local log_path = vim.api.nvim_call_function("fnamemodify", {source, ":p"})
     return log_path
   end
 
@@ -156,10 +156,8 @@ local function level()
     return "info"
   end
 end
-level()
--- local neuron_v2_config = {level = level()}
+
 log.new({level = level()}, true)
--- log.new(default_config, true)
 -- }}}
 
 return log
