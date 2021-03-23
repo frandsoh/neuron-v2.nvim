@@ -148,7 +148,7 @@ function neuron_v2.line_set_extmarks(buf_nr, line_nr, line)
   end
 end
 
-local function buffer_update_on_lines(bufnr, first_line, last_line_updated)
+function neuron_v2.buffer_update_on_lines(bufnr, first_line, last_line_updated)
   local log = require("neuron_v2.log").debug
   local ns_id = neuron_v2.namespace
 
@@ -243,7 +243,7 @@ function neuron_v2.buffer_attach()
   local bufnr = vim.fn.bufnr("%")
   local line_count = vim.api.nvim_buf_line_count(bufnr)
   -- local ns_id = neuron_v2.namespace
-  buffer_update_on_lines(bufnr, 0, line_count)
+  neuron_v2.buffer_update_on_lines(bufnr, 0, line_count)
   vim.api.nvim_buf_attach(
     bufnr,
     false,
@@ -257,7 +257,7 @@ function neuron_v2.buffer_attach()
       on_lines = vim.schedule_wrap(
         function(...)
           local event = {...}
-          buffer_update_on_lines(event[2], event[4], event[6])
+          neuron_v2.buffer_update_on_lines(event[2], event[4], event[6])
         end
       )
       -- on_detach = function(...)
