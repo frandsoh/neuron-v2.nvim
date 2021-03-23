@@ -32,8 +32,6 @@ function helpers.link_scanner(line, pos, opts)
 
   return function()
     while true do
-      -- local start, finish =
-      --   string.find(line, '(([#]?)(%[%[[^%[%]]-))([%w%d% %_%-%.%,%;%(%)%:%"%\'%@]+)((%]%])([#]?))', pos)
       local link = {string.find(line, '(([#]?)(%[%[[^%[%]]-))([%w%d% %_%-%.%,%;%(%)%:%"%\'%@]+)((%]%])([#]?))', pos)}
       local start, finish = link[1], link[2]
       if not start then
@@ -53,40 +51,16 @@ function helpers.link_scanner(line, pos, opts)
 
       local str = line:sub(start, finish)
 
-      -- local job = utils.query_id(zettelid)
-      if zettel_exists == "true" then
-        pos = finish + 1
-        return {
-          str = str,
-          row = opts.row,
-          exists = zettel_exists,
-          zettelid = zettelid,
-          -- zettel_data = zettel_data,
-          col = start,
-          end_col = finish
-        }
-      else
-        pos = finish + 1
-        return {
-          str = str,
-          row = opts.row,
-          exists = zettel_exists,
-          zettelid = zettelid,
-          -- zettel_data = zettel_data,
-          col = start,
-          end_col = finish
-        }
-      end
-      -- link_data = {
-      --   str = str,
-      --   row = opts.row,
-      --   exists = zettel_exists,
-      --   zettelid = zettelid,
-      --   -- zettel_data = zettel_data,
-      --   col = start,
-      --   end_col = finish
-      -- }
-      -- return link_data
+      pos = finish + 1
+      return {
+        str = str,
+        row = opts.row,
+        exists = zettel_exists,
+        zettelid = zettelid,
+        bufnr = opts.bufnr,
+        col = start,
+        end_col = finish
+      }
     end
   end
 end
@@ -142,14 +116,13 @@ function helpers.open()
   if not link then
     return
   end
-
-  -- local current_file = vim.fn.expand("%:t")
+  -- TODO(frandsoh): Update to use link.exists and helpers.zettel_path
   local file_name = link.zettelid .. ".md"
   local file_path = config.neuron_dir:joinpath(file_name)
   local is_new = not file_path:exists()
 
   if is_new then
-    vim.cmd [[write]]
+    -- vim.cmd [[write]]
     Job:new {
       command = "neuron",
       args = {"-d", config.neuron_dir.filename, "new", link.zettelid},
