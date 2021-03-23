@@ -45,6 +45,10 @@ function neuron_v2.setup(user_config)
 end
 
 function neuron_v2.serve_and_watch(opts)
+  if NeuronServe then
+    neuron_v2.stop_server()
+  end
+
   opts = opts or {}
   opts.address = opts.address or "127.0.0.1:8080"
 
@@ -65,6 +69,7 @@ function neuron_v2.serve_and_watch(opts)
       end
     )
   }
+
   NeuronServe.address = utils.get_localhost_address(opts.address)
   require("neuron_v2.log").debug(NeuronServe.address)
   NeuronServe:start()
@@ -173,9 +178,7 @@ function neuron_v2.buffer_update_on_lines(bufnr, first_line, last_line_updated)
             extmark_id = nil
           end
         end
-        -- local zettel_path = config.neuron_dir:joinpath(zettelid .. ".md")
-        -- local zettel_exists = zettel_path:exists()
-        -- local zettel_exists = link.zettel_data
+
         local hl_group
         if zettel_exists then
           hl_group = "Green"
@@ -242,7 +245,7 @@ end
 function neuron_v2.buffer_attach()
   local bufnr = vim.fn.bufnr("%")
   local line_count = vim.api.nvim_buf_line_count(bufnr)
-  -- local ns_id = neuron_v2.namespace
+
   neuron_v2.buffer_update_on_lines(bufnr, 0, line_count)
   vim.api.nvim_buf_attach(
     bufnr,
